@@ -1,11 +1,72 @@
 ---
 title: "TO628 Final Project Analytical Avengers"
-author: "Rachael Friedman"
+author: "Group 4: Analytical Avengers"
 date: "2023-04-04"
-output: html_document
+output: 
+  html_document:
+    toc : true
+    toc_float : true
+    toc_depth : 4
+    number_sections : false
+    code_folding: hide
+    theme: spacelab
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+```
+#### Link to GitHub: https://github.com/rachaelfriedman/-to628-finalproject.git
+
+# Project Proposal
+#### Group: Analytical Avengers 
+Patrick Burden, Rachael Friedman, Hardik Mehta, Benjamin Nahrstadt, Michael O’Brien 
+
+We are using a data set called CBB which is college basketball regular season data.
+We are trying to answer two questions. The first business question we are trying to answer is “Will a team make it to March Madness”. The second question is “If a team makes it to March Madness will a team make it past the second round”.
+
+
+
+# Read the data
+
+```{r}
+marchmad <- read.csv("cbb.csv")
+str(marchmad)
+summary(marchmad)
+```
+# Clean the Data
+
+Preliminary Data Exploration and Cleaning Details:
+For cleaning the data, we removed team names and year because these variables would not be significant to predicting our result. 
+We also created a calculated field to create a ratio between the number of wins and the number of games played by each team. 
+We also factorized conference, post season, and seed variables.
+We also created a new binary data field that identifies whether a team makes it to March Madness (where anytime Post Season not NA, this meant the team made it to March Madness, “1”) 
+
+
+```{r}
+marchmad$TEAM <- NULL
+marchmad$YEAR <- NULL
+marchmad$CONF <- as.factor(marchmad$CONF)
+marchmad$WIN_PERC <-  (marchmad$W / marchmad$G)
+marchmad$W <- NULL
+marchmad$POSTSEASON <- as.factor(marchmad$POSTSEASON)
+marchmad$QUALIFIED <- ifelse(is.na(marchmad$POSTSEASON), 0 , 1)
+marchmad$SEED <- as.factor(marchmad$SEED)
+str(marchmad)
+summary(marchmad)
+```
+
+
+# Build and Run Model
+
+Preliminary Regression Model Results:
+We found that the number of games plays, adjusted offensive efficiency (ADJOE), adjusted defensive efficiency (ADJDE), the estimate of the team’s chance of winning against a typical D1 team (BARTHAG), free throw rate (FTR), wins above bubble (WAB), and win percentage (WIN_PERC) were all statistically significant coefficients.  
+
+
+```{r}
+mar_qual <- marchmad[, -c(1, 20, 21)]
+str(mar_qual)
+basemodel <- glm(QUALIFIED ~., data = mar_qual, family = "binomial")
+summary(basemodel)
+
 ```
 
