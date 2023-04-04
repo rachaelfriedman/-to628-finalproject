@@ -1,0 +1,11 @@
+---
+title: "TO628 Final Project Analytical Avengers"
+author: "Rachael Friedman"
+date: "2023-04-04"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
